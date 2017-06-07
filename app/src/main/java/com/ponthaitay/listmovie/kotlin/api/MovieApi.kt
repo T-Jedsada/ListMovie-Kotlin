@@ -11,5 +11,5 @@ interface MovieApi {
     @GET("movie")
     fun getMovie(@Query("api_key") apiKey: String,
                  @Query("sort_by") sortBy: String,
-                 @Query("page") page: Long): Observable<Response<MovieDao>>
+                 @Query("page") page: Int): Observable<Response<MovieDao>>
 }

@@ -5,5 +5,5 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.ponthaitay.listmovie.kotlin.R
 
-class LoadmoreViewHolder(viewGroup: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.context)
-        .inflate(R.layout.load_more_item, viewGroup, false))
+class LoadMoreViewHolder(viewGroup: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.context)
+        .inflate(R.layout.progress_item, viewGroup, false))

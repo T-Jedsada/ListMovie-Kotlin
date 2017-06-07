@@ -2,10 +2,10 @@ package com.ponthaitay.listmovie.kotlin.movie
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieDao(@SerializedName("page") val page: Int,
+data class MovieDao(@SerializedName("page") var page: Int,
                     @SerializedName("total_result") val totalResult: Long,
                     @SerializedName("total_pages") val totalPages: Long,
-                    @SerializedName("results") val result: List<ResultDetail>) {
+                    @SerializedName("results") val result: MutableList<ResultDetail>) {
 
     data class ResultDetail(
             @SerializedName("vote_count") val voteCount: Int,

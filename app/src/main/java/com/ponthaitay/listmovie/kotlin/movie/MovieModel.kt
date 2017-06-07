@@ -16,7 +16,8 @@ class MovieModel {
 
     private var movieApi: MovieApi
     private var nextPageAvailable: Boolean = true
-    private var page: Long = 1
+    private val MAX_PAGE = 6
+    private var page: Int = 1
 
     private object Instance {
         val INSTANCE = MovieModel()
@@ -27,9 +28,8 @@ class MovieModel {
     }
 
     interface MovieModelCallback {
-        fun getMovieSuccess(data: MovieData?)
-        fun getMovieError(msg: String?)
-        fun getMovieComplete()
+        fun requestMovieSuccess(data: MovieData?)
+        fun requestMovieError(msg: String?)
     }
 
     init {
@@ -44,7 +44,7 @@ class MovieModel {
                 .create(MovieApi::class.java)
     }
 
-    fun requestMovie(apiKey: String, sortBy: String, page: Long): Observable<Response<MovieDao>> =
+    fun requestMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>> =
             movieApi.getMovie(apiKey, sortBy, page).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .onErrorReturn { Response.success(null) }
@@ -59,11 +59,8 @@ class MovieModel {
         val result = convertToMovieData(response)
         when (result) {
             is MovieData.Success -> {
-                when {
-                    nextPageAvailable -> callback.getMovieSuccess(result)
-                    else -> callback.getMovieComplete()
-                }
-                nextPageAvailable = page < 11
+                nextPageAvailable = page < MAX_PAGE
+                callback.requestMovieSuccess(result)
             }
             is MovieData.Failure -> requestMovieError(callback, result.str)
         }
@@ -71,10 +68,10 @@ class MovieModel {
 
     private fun requestMovieError(callback: MovieModelCallback, message: String?) {
         nextPageAvailable = false
-        callback.getMovieError(message)
+        callback.requestMovieError(message)
     }
 
-    private fun getNextPage(): Long = when {
+    private fun getNextPage(): Int = when {
         nextPageAvailable -> page++
         else -> 0
     }
