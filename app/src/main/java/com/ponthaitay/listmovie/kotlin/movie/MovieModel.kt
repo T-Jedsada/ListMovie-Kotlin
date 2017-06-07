@@ -59,11 +59,11 @@ class MovieModel {
         val result = convertToMovieData(response)
         when (result) {
             is MovieData.Success -> {
-                nextPageAvailable = page <= 10
                 when {
                     nextPageAvailable -> callback.getMovieSuccess(result)
-                    !nextPageAvailable -> callback.getMovieComplete()
+                    else -> callback.getMovieComplete()
                 }
+                nextPageAvailable = page < 11
             }
             is MovieData.Failure -> requestMovieError(callback, result.str)
         }
@@ -74,9 +74,9 @@ class MovieModel {
         callback.getMovieError(message)
     }
 
-    private fun getNextPage(): Long {
-        if (nextPageAvailable) return page++
-        else return 1
+    private fun getNextPage(): Long = when {
+        nextPageAvailable -> page++
+        else -> 0
     }
 
     private fun convertToMovieData(response: Response<MovieDao>?): MovieData = when (response) {
