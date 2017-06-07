@@ -1,5 +1,6 @@
-package com.ponthaitay.listmovie.kotlin
+package com.ponthaitay.listmovie.kotlin.movie
 
+import com.ponthaitay.listmovie.kotlin.api.MovieApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -13,23 +14,23 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieModel {
 
+    private var movieApi: MovieApi
+    private var nextPageAvailable: Boolean = true
+    private var page: Long = 1
+
     private object Instance {
         val INSTANCE = MovieModel()
     }
 
     companion object {
-        val instance: MovieModel by lazy { Instance.INSTANCE }
+        val instance: MovieModel by lazy { MovieModel.Instance.INSTANCE }
     }
 
     interface MovieModelCallback {
         fun getMovieSuccess(data: MovieData?)
-        fun getMovieComplete()
         fun getMovieError(msg: String?)
+        fun getMovieComplete()
     }
-
-    private var movieApi: MovieApi
-    private var nextPageAvailable: Boolean = true
-    private var page: Long = 1
 
     init {
         val httpClient = OkHttpClient.Builder()
@@ -43,16 +44,30 @@ class MovieModel {
                 .create(MovieApi::class.java)
     }
 
-    fun requestMovie(apiKey: String, sortBy: String, page: Long): Observable<Response<MovieData>> =
+    fun requestMovie(apiKey: String, sortBy: String, page: Long): Observable<Response<MovieDao>> =
             movieApi.getMovie(apiKey, sortBy, page).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .onErrorReturn { retrieveMovieFailure() }
+                    .onErrorReturn { Response.success(null) }
 
     fun requestMovie(apiKey: String, sortBy: String, callback: MovieModelCallback): Disposable =
             requestMovie(apiKey, sortBy, getNextPage()).subscribe({ checkResult(it, callback) },
-                    { requestMovieError(callback, it.message) })
+                    { requestMovieError(callback, MovieData.retrieveMovieFailure().str) })
 
     fun nextPageAvailable(): Boolean = nextPageAvailable
+
+    private fun checkResult(response: Response<MovieDao>?, callback: MovieModelCallback) {
+        val result = convertToMovieData(response)
+        when (result) {
+            is MovieData.Success -> {
+                nextPageAvailable = page <= 10
+                when {
+                    nextPageAvailable -> callback.getMovieSuccess(result)
+                    !nextPageAvailable -> callback.getMovieComplete()
+                }
+            }
+            is MovieData.Failure -> requestMovieError(callback, result.str)
+        }
+    }
 
     private fun requestMovieError(callback: MovieModelCallback, message: String?) {
         nextPageAvailable = false
@@ -64,17 +79,9 @@ class MovieModel {
         else return 1
     }
 
-    private fun checkResult(response: Response<MovieData>?, callback: MovieModelCallback) {
-        val result = response?.body()
-        when (result) {
-            is Success -> {
-                nextPageAvailable = page < 10
-                if (nextPageAvailable) callback.getMovieSuccess(result)
-                else callback.getMovieComplete()
-            }
-            is Failure -> requestMovieError(callback, result.str)
-            else -> requestMovieError(callback, response?.message())
-        }
+    private fun convertToMovieData(response: Response<MovieDao>?): MovieData = when (response) {
+        null -> MovieData.retrieveMovieFailure()
+        else -> MovieData.retrieveMovieSuccess(response.body())
     }
 
     private fun addLoggingInterceptor(builder: OkHttpClient.Builder) {
