@@ -9,22 +9,21 @@ class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
 
     private var liveDataMovie: MutableLiveData<MovieData>? = null
     private var movieDataSuccess = MovieData.View(mutableListOf(), mutableListOf())
-    private var movieModel = MovieModel.instance
+    private var movieModel : MovieModel? = MovieModel.instance
 
-    fun getMovie(apiKey: String, sortBy: String, loadMore: Boolean): LiveData<MovieData> {
+    fun requestMovie(apiKey: String, sortBy: String) = movieModel?.requestMovie(apiKey, sortBy, this)
+
+    fun getListMovie(apiKey: String, sortBy: String): LiveData<MovieData> {
         when (liveDataMovie) {
             null -> {
                 liveDataMovie = MutableLiveData()
-                movieModel.requestMovie(apiKey, sortBy, this)
-            }
-            else -> {
-                if (loadMore) movieModel.requestMovie(apiKey, sortBy, this)
+                requestMovie(apiKey, sortBy)
             }
         }
         return liveDataMovie as MutableLiveData<MovieData>
     }
 
-    fun getNextPageAvailable() = movieModel.nextPageAvailable()
+    fun getNextPageAvailable() = movieModel?.nextPageAvailable()
 
     override fun requestMovieSuccess(data: MovieData?) {
         when (data) {
@@ -38,5 +37,10 @@ class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
 
     override fun requestMovieError(msg: String?) {
         liveDataMovie?.value = retrieveMovieFailure()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        movieModel = null
     }
 }

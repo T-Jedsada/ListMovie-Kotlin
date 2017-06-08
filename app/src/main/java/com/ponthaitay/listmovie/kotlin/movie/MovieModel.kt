@@ -1,5 +1,6 @@
 package com.ponthaitay.listmovie.kotlin.movie
 
+import android.arch.lifecycle.LifecycleObserver
 import com.ponthaitay.listmovie.kotlin.api.MovieApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,7 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MovieModel {
+class MovieModel : LifecycleObserver {
 
     private var movieApi: MovieApi
     private var nextPageAvailable: Boolean = true
