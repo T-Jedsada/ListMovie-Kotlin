@@ -17,11 +17,9 @@ class MovieViewHolder(viewGroup: ViewGroup) : RecyclerView.ViewHolder(LayoutInfl
         itemView.iv_movie.loadUrl(data?.backdropPath)
     }
 
-    fun ImageView.loadUrl(path: String?) {
-        Picasso.with(itemView.context)
-                .load("http://image.tmdb.org/t/p/w780/" + path)
-                .placeholder(android.R.color.darker_gray)
-                .error(android.R.color.darker_gray)
-                .into(this)
-    }
+    fun ImageView.loadUrl(path: String?) = Picasso.with(itemView.context)
+            .load("http://image.tmdb.org/t/p/w780/" + path)
+            .placeholder(android.R.color.darker_gray)
+            .error(android.R.color.darker_gray)
+            .into(this)
 }

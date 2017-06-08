@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.ponthaitay.listmovie.kotlin.LifecycleAppCompatActivity
@@ -32,12 +33,15 @@ class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCall
                             }
                             GONE -> adapterMovie.addMovie(it.newResult, mainViewModel.getNextPageAvailable()!!)
                         }
+                        is MovieData.Failure -> {
+                            Log.d("POND", "error")
+                        }
                     }
                 })
     }
 
     private fun setupInstance() {
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(this, MainViewModel.Factory()).get(MainViewModel::class.java)
         adapterMovie = MovieAdapter()
         adapterMovie.setMovieCallback(this)
     }

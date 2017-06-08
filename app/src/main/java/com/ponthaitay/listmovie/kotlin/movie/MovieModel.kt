@@ -20,14 +20,6 @@ class MovieModel : LifecycleObserver {
     private val MAX_PAGE = 6
     private var page: Int = 1
 
-    private object Instance {
-        val INSTANCE = MovieModel()
-    }
-
-    companion object {
-        val instance: MovieModel by lazy { MovieModel.Instance.INSTANCE }
-    }
-
     interface MovieModelCallback {
         fun requestMovieSuccess(data: MovieData?)
         fun requestMovieError(msg: String?)
@@ -54,7 +46,7 @@ class MovieModel : LifecycleObserver {
             requestMovie(apiKey, sortBy, getNextPage()).subscribe({ checkResult(it, callback) },
                     { requestMovieError(callback, MovieData.retrieveMovieFailure().str) })
 
-    fun nextPageAvailable(): Boolean = nextPageAvailable
+    fun nextPageAvailable() = nextPageAvailable
 
     private fun checkResult(response: Response<MovieDao>?, callback: MovieModelCallback) {
         val result = convertToMovieData(response)
