@@ -10,7 +10,15 @@ open class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
 
     private var liveDataMovie: MutableLiveData<MovieData>? = null
     private var movieDataSuccess = MovieData.View(mutableListOf(), mutableListOf())
-    private var movieModel: MovieModel? = null
+    private var movieModel: MovieModel
+
+    init {
+        movieModel = MovieModel()
+    }
+
+    fun setMovieModel(movieModel: MovieModel) {
+        this.movieModel = movieModel
+    }
 
     fun getListMovie(apiKey: String, sortBy: String): LiveData<MovieData> {
         when (liveDataMovie) {
@@ -24,10 +32,10 @@ open class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
     }
 
     fun requestMovie(apiKey: String, sortBy: String) {
-        movieModel?.requestMovie(apiKey, sortBy, this)
+        movieModel.requestMovie(apiKey, sortBy, this)
     }
 
-    fun getNextPageAvailable() = movieModel?.nextPageAvailable()
+    fun getNextPageAvailable() = movieModel.nextPageAvailable()
 
     override fun requestMovieSuccess(data: MovieData?) {
         when (data) {
@@ -46,9 +54,5 @@ open class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
     class Factory : ViewModelProvider.NewInstanceFactory() {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = MainViewModel() as T
-    }
-
-    fun setMovieModel(movieModel: MovieModel) {
-        this.movieModel = movieModel
     }
 }

@@ -1,6 +1,7 @@
 package com.ponthaitay.listmovie.kotlin.movie
 
 import android.arch.lifecycle.LifecycleObserver
+import android.util.Log
 import com.ponthaitay.listmovie.kotlin.api.MovieApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,7 +13,7 @@ import retrofit2.Response
 
 class MovieModel : LifecycleObserver {
 
-    private var movieApi: MovieApi?
+    private var movieApi: MovieApi? = null
     private var nextPageAvailable: Boolean = true
     private val MAX_PAGE = 6
     private var page: Int = 1
@@ -25,28 +26,33 @@ class MovieModel : LifecycleObserver {
     init {
         val httpClient = OkHttpClient.Builder()
         addLoggingInterceptor(httpClient)
-        movieApi = null
+//        movieApi = null
     }
 
     fun setApi(mockMovieApi: MovieApi) {
         movieApi = mockMovieApi
     }
 
-    fun requestMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>> =
-            movieApi!!.getMovie(apiKey, sortBy, page).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .onErrorReturn { Response.success(null) }
+    fun requestMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>>? =
+            movieApi?.getMovie(apiKey, sortBy, page)?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.onErrorReturn { Response.success(null) }
 
-    fun requestMovie(apiKey: String, sortBy: String, callback: MovieModelCallback): Disposable =
-            requestMovie(apiKey, sortBy, getNextPage()).subscribe({
-                val result = convertToMovieData(it)
-                when (result) {
-                    is MovieData.Success -> {
-                        nextPageAvailable = page < MAX_PAGE
-                        callback.requestMovieSuccess(result)
-                    }
-                    is MovieData.Failure -> requestMovieError(callback, result.str)
+    fun requestMovie(apiKey: String, sortBy: String, callback: MovieModelCallback): Disposable? =
+            requestMovie(apiKey, sortBy, getNextPage())?.subscribe({
+                if(it.isSuccessful) {
+                    val result = convertToMovieData(it)
+                    Log.d("POND", "$it")
+                } else {
+                    Log.d("POND", "$it")
                 }
+//                when (result) {
+//                    is MovieData.Success -> {
+//                        nextPageAvailable = page < MAX_PAGE
+//                        callback.requestMovieSuccess(result)
+//                    }
+//                    is MovieData.Failure -> requestMovieError(callback, result.str)
+//                }
             }, { requestMovieError(callback, MovieData.retrieveMovieFailure().str) })
 
     fun nextPageAvailable() = nextPageAvailable
