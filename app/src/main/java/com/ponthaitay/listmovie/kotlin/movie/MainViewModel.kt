@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.ponthaitay.listmovie.kotlin.movie.MovieData.Companion.retrieveMovieFailure
 
-class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
+open class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
 
     private var liveDataMovie: MutableLiveData<MovieData>? = null
     private var movieDataSuccess = MovieData.View(mutableListOf(), mutableListOf())
@@ -46,5 +46,9 @@ class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
     class Factory : ViewModelProvider.NewInstanceFactory() {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = MainViewModel() as T
+    }
+
+    fun setMovieModel(movieModel: MovieModel) {
+        this.movieModel = movieModel
     }
 }
