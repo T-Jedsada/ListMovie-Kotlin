@@ -6,7 +6,7 @@ import com.ponthaitay.listmovie.kotlin.JsonMockUtility
 import com.ponthaitay.listmovie.kotlin.RxSchedulersOverrideRule
 import com.ponthaitay.listmovie.kotlin.api.MovieApi
 import io.reactivex.Observable
-import org.junit.Assert.assertEquals
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -17,18 +17,18 @@ import retrofit2.Response
 
 class MovieModelTest {
 
-    @Rule @JvmField val rxSchedulerRule = RxSchedulersOverrideRule()
-
-    private var mockApi: MovieApi = mock()
+    @Rule @JvmField var rxSchedulerRule = RxSchedulersOverrideRule()
 
     private var mainViewModel = MainViewModel()
     private var movieModel = MovieModel()
     private var jsonUtil = JsonMockUtility()
 
+    var mockApi: MovieApi = mock()
+
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        movieModel.setApi(mockApi)
+        movieModel.setMockApi(mockApi)
         mainViewModel.setMovieModel(movieModel)
     }
 

@@ -1,6 +1,5 @@
 package com.ponthaitay.listmovie.kotlin.movie
 
-import android.arch.lifecycle.LifecycleObserver
 import com.ponthaitay.listmovie.kotlin.api.MovieApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,12 +12,12 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MovieModel : LifecycleObserver {
+class MovieModel {
 
     private var nextPageAvailable = true
     private val MAX_PAGE = 6
     private var page = 1
-    private var movieApi: MovieApi
+    private var movieApi: MovieApi? = null
 
     interface MovieModelCallback {
         fun requestMovieSuccess(data: MovieData?)
@@ -37,12 +36,12 @@ class MovieModel : LifecycleObserver {
                 .create(MovieApi::class.java)
     }
 
-    fun setApi(mockApi: MovieApi) {
+    fun setMockApi(mockApi: MovieApi) {
         movieApi = mockApi
     }
 
     fun observableMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>> =
-            movieApi.getMovie(apiKey, sortBy, page)
+            movieApi!!.getMovie(apiKey, sortBy, page)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .onErrorReturn { Response.success(null) }
