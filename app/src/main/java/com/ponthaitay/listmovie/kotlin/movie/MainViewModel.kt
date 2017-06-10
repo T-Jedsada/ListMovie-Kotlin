@@ -6,15 +6,11 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.ponthaitay.listmovie.kotlin.movie.MovieData.Companion.retrieveMovieFailure
 
-open class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
+class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
 
     private var liveDataMovie: MutableLiveData<MovieData>? = null
     private var movieDataSuccess = MovieData.View(mutableListOf(), mutableListOf())
-    private var movieModel: MovieModel
-
-    init {
-        movieModel = MovieModel()
-    }
+    private var movieModel: MovieModel? = null
 
     fun setMovieModel(movieModel: MovieModel) {
         this.movieModel = movieModel
@@ -23,8 +19,8 @@ open class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
     fun getListMovie(apiKey: String, sortBy: String): LiveData<MovieData> {
         when (liveDataMovie) {
             null -> {
-                liveDataMovie = MutableLiveData()
                 movieModel = MovieModel()
+                liveDataMovie = MutableLiveData()
                 requestMovie(apiKey, sortBy)
             }
         }
@@ -32,10 +28,10 @@ open class MainViewModel : ViewModel(), MovieModel.MovieModelCallback {
     }
 
     fun requestMovie(apiKey: String, sortBy: String) {
-        movieModel.requestMovie(apiKey, sortBy, this)
+        movieModel?.requestMovie(apiKey, sortBy, this)
     }
 
-    fun getNextPageAvailable() = movieModel.nextPageAvailable()
+    fun getNextPageAvailable() = movieModel?.nextPageAvailable()
 
     override fun requestMovieSuccess(data: MovieData?) {
         when (data) {

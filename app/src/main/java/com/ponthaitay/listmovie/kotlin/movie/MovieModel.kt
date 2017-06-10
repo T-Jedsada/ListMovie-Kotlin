@@ -1,7 +1,6 @@
 package com.ponthaitay.listmovie.kotlin.movie
 
 import android.arch.lifecycle.LifecycleObserver
-import android.util.Log
 import com.ponthaitay.listmovie.kotlin.api.MovieApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -10,13 +9,16 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieModel : LifecycleObserver {
 
-    private var movieApi: MovieApi? = null
-    private var nextPageAvailable: Boolean = true
+    private var nextPageAvailable = true
     private val MAX_PAGE = 6
-    private var page: Int = 1
+    private var page = 1
+    private var movieApi: MovieApi
 
     interface MovieModelCallback {
         fun requestMovieSuccess(data: MovieData?)
@@ -26,33 +28,35 @@ class MovieModel : LifecycleObserver {
     init {
         val httpClient = OkHttpClient.Builder()
         addLoggingInterceptor(httpClient)
-//        movieApi = null
+        movieApi = Retrofit.Builder()
+                .baseUrl("https://api.themoviedb.org/3/discover/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build()
+                .create(MovieApi::class.java)
     }
 
-    fun setApi(mockMovieApi: MovieApi) {
-        movieApi = mockMovieApi
+    fun setApi(mockApi: MovieApi) {
+        movieApi = mockApi
     }
 
-    fun requestMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>>? =
-            movieApi?.getMovie(apiKey, sortBy, page)?.subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.onErrorReturn { Response.success(null) }
+    fun observableMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>> =
+            movieApi.getMovie(apiKey, sortBy, page)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn { Response.success(null) }
 
-    fun requestMovie(apiKey: String, sortBy: String, callback: MovieModelCallback): Disposable? =
-            requestMovie(apiKey, sortBy, getNextPage())?.subscribe({
-                if(it.isSuccessful) {
-                    val result = convertToMovieData(it)
-                    Log.d("POND", "$it")
-                } else {
-                    Log.d("POND", "$it")
+    fun requestMovie(apiKey: String, sortBy: String, callback: MovieModelCallback): Disposable =
+            observableMovie(apiKey, sortBy, getNextPage()).subscribe({
+                val result = convertToMovieData(it)
+                when (result) {
+                    is MovieData.Success -> {
+                        nextPageAvailable = page < MAX_PAGE
+                        callback.requestMovieSuccess(result)
+                    }
+                    is MovieData.Failure -> requestMovieError(callback, result.str)
                 }
-//                when (result) {
-//                    is MovieData.Success -> {
-//                        nextPageAvailable = page < MAX_PAGE
-//                        callback.requestMovieSuccess(result)
-//                    }
-//                    is MovieData.Failure -> requestMovieError(callback, result.str)
-//                }
             }, { requestMovieError(callback, MovieData.retrieveMovieFailure().str) })
 
     fun nextPageAvailable() = nextPageAvailable
