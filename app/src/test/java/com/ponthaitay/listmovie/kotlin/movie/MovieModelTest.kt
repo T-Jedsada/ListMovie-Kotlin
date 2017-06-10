@@ -4,9 +4,10 @@ import com.ponthaitay.listmovie.kotlin.JsonMockUtility
 import com.ponthaitay.listmovie.kotlin.RxSchedulersOverrideRule
 import com.ponthaitay.listmovie.kotlin.api.MovieApi
 import io.reactivex.Observable
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.schedulers.Schedulers
-import org.junit.*
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Matchers.anyInt
 import org.mockito.Matchers.anyString
@@ -29,7 +30,6 @@ class MovieModelTest {
 
     @Before
     fun setUp() {
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { _ -> Schedulers.trampoline() }
         jsonUtil = JsonMockUtility()
         MockitoAnnotations.initMocks(this)
 
@@ -38,11 +38,6 @@ class MovieModelTest {
 
         mainViewModel = MainViewModel()
         mainViewModel?.setMovieModel(movieModel!!)
-    }
-
-    @After
-    fun tearDownClass() {
-        RxAndroidPlugins.reset()
     }
 
     @Test
