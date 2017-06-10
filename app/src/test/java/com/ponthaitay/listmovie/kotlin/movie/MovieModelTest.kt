@@ -23,7 +23,7 @@ class MovieModelTest {
     private var movieModel = MovieModel()
     private var jsonUtil = JsonMockUtility()
 
-    var mockApi: MovieApi = mock()
+    private var mockApi: MovieApi = mock()
 
     @Before
     fun setUp() {
