@@ -17,7 +17,7 @@ class MovieModel {
     private var nextPageAvailable = true
     private val MAX_PAGE = 6
     private var page = 1
-    private var movieApi: MovieApi? = null
+    private var movieApi: MovieApi
 
     interface MovieModelCallback {
         fun requestMovieSuccess(data: MovieData?)
@@ -41,7 +41,7 @@ class MovieModel {
     }
 
     fun observableMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>> =
-            movieApi!!.getMovie(apiKey, sortBy, page)
+            movieApi.getMovie(apiKey, sortBy, page)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .onErrorReturn { Response.success(null) }
