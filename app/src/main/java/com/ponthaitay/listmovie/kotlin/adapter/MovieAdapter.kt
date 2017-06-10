@@ -6,8 +6,8 @@ import com.ponthaitay.listmovie.kotlin.movie.MovieDao
 
 class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val TYPE_MOVIE: Int = 1
-    private val TYPE_LOAD_MORE: Int = 2
+    private val TYPE_MOVIE = 1
+    private val TYPE_LOAD_MORE = 2
     private var listItem: MutableList<MovieDao.ResultDetail> = mutableListOf()
     private var movieCallback: MovieAdapterCallback? = null
     private var nextPageAvailable = false
