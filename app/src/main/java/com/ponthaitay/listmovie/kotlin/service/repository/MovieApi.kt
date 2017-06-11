@@ -1,6 +1,6 @@
-package com.ponthaitay.listmovie.kotlin.api
+package com.ponthaitay.listmovie.kotlin.service.repository
 
-import com.ponthaitay.listmovie.kotlin.movie.MovieDao
+import com.ponthaitay.listmovie.kotlin.service.model.MovieDao
 import io.reactivex.Observable
 import retrofit2.Response
 import retrofit2.http.GET

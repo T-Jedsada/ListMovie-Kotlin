@@ -1,10 +1,10 @@
-package com.ponthaitay.listmovie.kotlin.adapter
+package com.ponthaitay.listmovie.kotlin.ui.movie.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import com.ponthaitay.listmovie.kotlin.movie.MovieDao
+import com.ponthaitay.listmovie.kotlin.service.model.MovieDao
 
-class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
 
     private val TYPE_MOVIE = 1
     private val TYPE_LOAD_MORE = 2
@@ -25,6 +25,11 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addMovie(data: MutableList<MovieDao.ResultDetail>, nextPageAvailable: Boolean) {
         this.nextPageAvailable = nextPageAvailable
         listItem.addAll(listItem.size, data)
+        notifyItemInserted(listItem.size)
+    }
+
+    fun removeViewLoadMore() {
+        this.nextPageAvailable = false
         notifyItemInserted(listItem.size)
     }
 

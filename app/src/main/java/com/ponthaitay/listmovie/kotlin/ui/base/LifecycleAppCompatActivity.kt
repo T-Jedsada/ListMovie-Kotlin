@@ -1,4 +1,4 @@
-package com.ponthaitay.listmovie.kotlin
+package com.ponthaitay.listmovie.kotlin.ui.base
 
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.LifecycleRegistryOwner

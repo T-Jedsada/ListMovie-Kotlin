@@ -1,4 +1,4 @@
-package com.ponthaitay.listmovie.kotlin.movie
+package com.ponthaitay.listmovie.kotlin.service.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -21,4 +21,15 @@ data class MovieDao(@SerializedName("page") var page: Int,
             @SerializedName("adult") val adult: Boolean,
             @SerializedName("overview") val overview: String,
             @SerializedName("release_date") val releaseDate: String)
+}
+
+sealed class MovieData {
+    data class Success(var movieDao: MovieDao) : MovieData()
+    data class View(var allResult: MutableList<MovieDao.ResultDetail>, var newResult: MutableList<MovieDao.ResultDetail>) : MovieData()
+    data class Failure(val str: String) : MovieData()
+
+    companion object {
+        fun retrieveMovieSuccess(body: MovieDao?) = MovieData.Success(body!!)
+        fun retrieveMovieFailure(msg: String? = "Sorry, somethings error.") = MovieData.Failure(msg!!)
+    }
 }

@@ -1,22 +1,25 @@
-package com.ponthaitay.listmovie.kotlin.movie
+package com.ponthaitay.listmovie.kotlin.ui.movie
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.ponthaitay.listmovie.kotlin.LifecycleAppCompatActivity
 import com.ponthaitay.listmovie.kotlin.R
-import com.ponthaitay.listmovie.kotlin.SpacesItemDecoration
-import com.ponthaitay.listmovie.kotlin.adapter.MovieAdapter
+import com.ponthaitay.listmovie.kotlin.service.extentions.providesMovieAPIs
+import com.ponthaitay.listmovie.kotlin.service.model.MovieData
+import com.ponthaitay.listmovie.kotlin.ui.SpacesItemDecoration
+import com.ponthaitay.listmovie.kotlin.ui.base.LifecycleAppCompatActivity
+import com.ponthaitay.listmovie.kotlin.ui.extentions.snack
+import com.ponthaitay.listmovie.kotlin.ui.movie.adapter.MovieAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCallback {
 
     private val SORT_BY = "popularity.desc"
-    private val API_KEY = getString(R.string.api_key)
+    private lateinit var API_KEY: String
     private lateinit var adapterMovie: MovieAdapter
     private lateinit var mainViewModel: MainViewModel
 
@@ -36,14 +39,16 @@ class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCall
                             GONE -> adapterMovie.addMovie(it.newResult, mainViewModel.getNextPageAvailable()!!)
                         }
                         is MovieData.Failure -> {
-                            Log.d("POND", "error")
+                            container.snack(it.str, Snackbar.LENGTH_SHORT)
+                            adapterMovie.removeViewLoadMore()
                         }
                     }
                 })
     }
 
     private fun setupInstance() {
-        mainViewModel = ViewModelProviders.of(this, MainViewModel.Factory()).get(MainViewModel::class.java)
+        API_KEY = getString(R.string.api_key)
+        mainViewModel = ViewModelProviders.of(this, MainViewModel.Factory(providesMovieAPIs())).get(MainViewModel::class.java)
         adapterMovie = MovieAdapter()
         adapterMovie.setMovieCallback(this)
     }

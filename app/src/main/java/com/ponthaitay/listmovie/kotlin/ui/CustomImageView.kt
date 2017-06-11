@@ -1,4 +1,4 @@
-package com.ponthaitay.listmovie.kotlin
+package com.ponthaitay.listmovie.kotlin.ui
 
 import android.content.Context
 import android.util.AttributeSet
