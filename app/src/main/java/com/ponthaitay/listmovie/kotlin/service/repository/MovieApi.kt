@@ -7,8 +7,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MovieApi {
-    @GET("movie")
-    fun getMovie(@Query("api_key") apiKey: String,
-                 @Query("sort_by") sortBy: String,
-                 @Query("page") page: Int): Observable<Response<MovieDao>>
+    @GET("movie?api_key=6c26bbd637c722ffab43dc6984053411")
+    fun getMovie(@Query("sort_by") sortBy: String, @Query("page") page: Int): Observable<Response<MovieDao>>
 }

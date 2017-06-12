@@ -18,13 +18,13 @@ open class MovieRepository(var movieAPIs: MovieApi) {
         fun requestMovieError(msg: String?)
     }
 
-    fun observableMovie(apiKey: String, sortBy: String, page: Int): Observable<Response<MovieDao>> =
-            movieAPIs.getMovie(apiKey, sortBy, page)
+    fun observableMovie(sortBy: String, page: Int): Observable<Response<MovieDao>> =
+            movieAPIs.getMovie(sortBy, page)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    fun requestMovie(apiKey: String, sortBy: String, callback: MovieModelCallback) {
-        observableMovie(apiKey, sortBy, getNextPage()).subscribe({
+    fun requestMovie(sortBy: String, callback: MovieModelCallback) {
+        observableMovie(sortBy, getNextPage()).subscribe({
             when (it.isSuccessful) {
                 true -> {
                     nextPageAvailable = page < MAX_PAGE

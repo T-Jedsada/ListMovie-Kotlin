@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCallback {
 
     private val SORT_BY = "popularity.desc"
-    private lateinit var API_KEY: String
     private lateinit var adapterMovie: MovieAdapter
     private lateinit var mainViewModel: MainViewModel
 
@@ -28,7 +27,7 @@ class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCall
         setContentView(R.layout.activity_main)
         setupInstance()
         setupView()
-        mainViewModel.getListMovie(API_KEY, SORT_BY)
+        mainViewModel.getListMovie(SORT_BY)
                 .observe(this, Observer {
                     when (it) {
                         is MovieData.View -> when (pb_loading.visibility) {
@@ -47,7 +46,6 @@ class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCall
     }
 
     private fun setupInstance() {
-        API_KEY = getString(R.string.api_key)
         mainViewModel = ViewModelProviders.of(this, MainViewModel.Factory(providesMovieAPIs())).get(MainViewModel::class.java)
         adapterMovie = MovieAdapter()
         adapterMovie.setMovieCallback(this)
@@ -61,6 +59,6 @@ class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCall
     }
 
     override fun loadMoreMovie() {
-        mainViewModel.requestMovie(API_KEY, SORT_BY)
+        mainViewModel.requestMovie(SORT_BY)
     }
 }

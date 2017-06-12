@@ -14,19 +14,19 @@ class MainViewModel(var movieApi: MovieApi) : ViewModel(), MovieRepository.Movie
     private var movieDataSuccess = MovieData.View(mutableListOf(), mutableListOf())
     private var movieRepository: MovieRepository? = null
 
-    fun getListMovie(apiKey: String, sortBy: String): LiveData<MovieData> {
+    fun getListMovie(sortBy: String): LiveData<MovieData> {
         when (liveDataMovie) {
             null -> {
                 movieRepository = MovieRepository(movieApi)
                 liveDataMovie = MutableLiveData()
-                requestMovie(apiKey, sortBy)
+                requestMovie(sortBy)
             }
         }
         return liveDataMovie as MutableLiveData<MovieData>
     }
 
-    fun requestMovie(apiKey: String, sortBy: String) {
-        movieRepository?.requestMovie(apiKey, sortBy, this)
+    fun requestMovie(sortBy: String) {
+        movieRepository?.requestMovie(sortBy, this)
     }
 
     fun getNextPageAvailable() = movieRepository?.nextPageAvailable()

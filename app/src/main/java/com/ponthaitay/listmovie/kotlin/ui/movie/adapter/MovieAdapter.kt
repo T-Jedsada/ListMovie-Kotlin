@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.ponthaitay.listmovie.kotlin.service.model.MovieDao
 
-class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
+class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_MOVIE = 1
     private val TYPE_LOAD_MORE = 2
@@ -37,12 +37,11 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
         movieCallback = callback
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? =
-            when (viewType) {
-                TYPE_MOVIE -> MovieViewHolder(viewGroup!!)
-                TYPE_LOAD_MORE -> LoadMoreViewHolder(viewGroup!!)
-                else -> null
-            }
+    override fun onCreateViewHolder(viewGroup: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? = when (viewType) {
+        TYPE_MOVIE -> MovieViewHolder(viewGroup!!)
+        TYPE_LOAD_MORE -> LoadMoreViewHolder(viewGroup!!)
+        else -> null
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         when (holder) {
