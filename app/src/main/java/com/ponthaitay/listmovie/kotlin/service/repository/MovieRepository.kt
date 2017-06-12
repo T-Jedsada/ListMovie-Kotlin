@@ -7,7 +7,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class MovieRepository(var movieAPIs: MovieApi) {
+open class MovieRepository(var movieAPIs: MovieApi) {
 
     private var nextPageAvailable = true
     private val MAX_PAGE = 6

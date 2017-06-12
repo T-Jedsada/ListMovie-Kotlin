@@ -30,6 +30,6 @@ sealed class MovieData {
 
     companion object {
         fun retrieveMovieSuccess(body: MovieDao?) = MovieData.Success(body!!)
-        fun retrieveMovieFailure(msg: String? = "Sorry, somethings error.") = MovieData.Failure(msg!!)
+        fun retrieveMovieFailure(msg: String = "Sorry, somethings error.") = MovieData.Failure(msg)
     }
 }

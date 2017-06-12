@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.ponthaitay.listmovie.kotlin.service.model.MovieData
-import com.ponthaitay.listmovie.kotlin.service.model.MovieData.Companion.retrieveMovieFailure
 import com.ponthaitay.listmovie.kotlin.service.repository.MovieApi
 import com.ponthaitay.listmovie.kotlin.service.repository.MovieRepository
 
@@ -39,7 +38,7 @@ class MainViewModel(var movieApi: MovieApi) : ViewModel(), MovieRepository.Movie
     }
 
     override fun requestMovieError(msg: String?) {
-        liveDataMovie?.value = retrieveMovieFailure(msg)
+        liveDataMovie?.value = MovieData.retrieveMovieFailure(msg!!)
     }
 
     class Factory(var movieApi: MovieApi) : ViewModelProvider.NewInstanceFactory() {

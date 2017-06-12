@@ -1,6 +1,7 @@
 package com.ponthaitay.listmovie.kotlin.ui.movie
 
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.ponthaitay.listmovie.kotlin.JsonMockUtility
 import com.ponthaitay.listmovie.kotlin.RxSchedulersOverrideRule
@@ -19,15 +20,17 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
-class MovieModelTest {
+
+class MainViewModelTest {
 
     @Rule @JvmField val rxSchedulerRule = RxSchedulersOverrideRule()
 
     private var mockAPIs = mock<MovieApi> {}
 
     private var jsonUtil = JsonMockUtility()
-    private var movieModel = MovieRepository(mockAPIs)
+    private var movieRepository = MovieRepository(mockAPIs)
     private var mainViewModel = MainViewModel(mockAPIs)
+    private var spyMovieRepository = spy(movieRepository)
 
     @Before
     fun setUp() {
@@ -41,9 +44,8 @@ class MovieModelTest {
         val mockResponse = Response.success(mockResult)
 //        val mockResponse1 = Response.success(MovieDao(1,1,1, mutableListOf()))
         val mockObservable = Observable.just(mockResponse)
-        whenever(movieModel.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(spyMovieRepository.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("api_key", "popularity.desc")
-
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
         testObserver.assertNoErrors()
@@ -54,22 +56,19 @@ class MovieModelTest {
             assertThat(response.body(), `is`(mockResponse.body()))
             true
         }
-
-        assertEquals(true, movieModel.nextPageAvailable())
     }
 
     @Test
     fun requestMovieError() {
         val throwable = Throwable("error")
         val mockObservable = Observable.error<Response<MovieDao>>(throwable)
-        whenever(movieModel.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(spyMovieRepository.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("api_key", "popularity.desc")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
         testObserver.assertSubscribed()
         testObserver.assertNotComplete()
         testObserver.assertError(throwable)
-//        assertEquals(false, movieModel.nextPageAvailable())
     }
 
     @Test
@@ -78,7 +77,7 @@ class MovieModelTest {
         assertEquals(mockResult.result.size, 0)
         val mockResponse = Response.success(mockResult)
         val mockObservable = Observable.just(mockResponse)
-        whenever(movieModel.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(spyMovieRepository.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("api_key", "popularity.desc")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
@@ -92,7 +91,7 @@ class MovieModelTest {
         val mockResult = jsonUtil.getJsonToMock("movie_invalid_api.json", MovieDao::class.java)
         val mockResponse = Response.success(mockResult)
         val mockObservable = Observable.just(mockResponse)
-        whenever(movieModel.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(spyMovieRepository.observableMovie(anyString(), anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("api_key", "popularity.desc")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
