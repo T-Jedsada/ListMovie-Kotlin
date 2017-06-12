@@ -15,12 +15,14 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.MockitoAnnotations
+import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
 
-
+@RunWith(RobolectricTestRunner::class)
 class MainViewModelTest {
 
     @Rule @JvmField val rxSchedulerRule = RxSchedulersOverrideRule()
