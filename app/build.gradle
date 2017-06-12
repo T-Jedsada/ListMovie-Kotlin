@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
+apply plugin: 'project-report'
 
 android {
     compileSdkVersion 25
@@ -22,13 +23,6 @@ android {
     }
 }
 
-ext {
-    rx_android_version = "2.0.1"
-    rx_version = "2.1.0"
-    gson_version = "2.8.1"
-    retrofit_version = "2.3.0"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -40,20 +34,20 @@ dependencies {
     testCompile "org.robolectric:robolectric:3.3.2"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation "com.android.support:appcompat-v7:$android_support_version"
-    implementation "com.android.support:design:$android_support_version"
-    implementation "com.android.support:cardview-v7:$android_support_version"
+    implementation 'com.android.support:appcompat-v7:' + rootProject.ext.android_support_version
+    implementation 'com.android.support:design:' + rootProject.ext.android_support_version
+    implementation 'com.android.support:cardview-v7:' + rootProject.ext.android_support_version
 
-    compile "android.arch.lifecycle:extensions:$arch_lifecycle_version"
-    annotationProcessor "android.arch.lifecycle:compiler:$arch_lifecycle_version"
+    compile 'android.arch.lifecycle:extensions:' + rootProject.ext.arch_lifecycle_version
+    annotationProcessor 'android.arch.lifecycle:compiler:' + rootProject.ext.arch_lifecycle_version
 
-    compile "com.google.code.gson:gson:$gson_version"
-    compile "io.reactivex.rxjava2:rxandroid:$rx_android_version"
-    compile "io.reactivex.rxjava2:rxjava:$rx_version"
+    compile 'com.google.code.gson:gson:' + rootProject.ext.gson_version
+    compile 'io.reactivex.rxjava2:rxandroid:' + rootProject.ext.rx_android_version
+    compile 'io.reactivex.rxjava2:rxjava:' + rootProject.ext.rx_version
 
-    compile "com.squareup.retrofit2:retrofit:$retrofit_version"
-    compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    compile 'com.squareup.retrofit2:retrofit:' + rootProject.ext.retrofit_version
+    compile 'com.squareup.retrofit2:converter-gson:' + rootProject.ext.retrofit_version
+    compile 'com.squareup.retrofit2:adapter-rxjava2:' + rootProject.ext.retrofit_version
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
     compile 'com.squareup.picasso:picasso:2.5.2'
