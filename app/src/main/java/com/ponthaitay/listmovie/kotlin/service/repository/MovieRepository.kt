@@ -40,5 +40,5 @@ open class MovieRepository(var movieAPIs: MovieApi) {
 
     fun nextPageAvailable() = nextPageAvailable
 
-    private fun getNextPage(): Int = page++
+    private fun getNextPage() = page++
 }
