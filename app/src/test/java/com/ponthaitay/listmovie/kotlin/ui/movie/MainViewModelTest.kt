@@ -2,13 +2,11 @@ package com.ponthaitay.listmovie.kotlin.ui.movie
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.ponthaitay.listmovie.kotlin.JsonMockUtility
 import com.ponthaitay.listmovie.kotlin.RxSchedulersOverrideRule
 import com.ponthaitay.listmovie.kotlin.service.model.MovieDao
 import com.ponthaitay.listmovie.kotlin.service.repository.MovieApi
-import com.ponthaitay.listmovie.kotlin.service.repository.MovieRepository
 import io.reactivex.Observable
 import junit.framework.Assert.assertEquals
 import org.hamcrest.CoreMatchers.`is`
@@ -31,9 +29,7 @@ class MainViewModelTest {
     private var mockAPIs = mock<MovieApi> {}
 
     private var jsonUtil = JsonMockUtility()
-    private var movieRepository = MovieRepository(mockAPIs)
     private var mainViewModel = MainViewModel(mockAPIs)
-    private var spyMovieRepository = spy(movieRepository)
 
     @Before
     fun setUp() {
@@ -47,7 +43,7 @@ class MainViewModelTest {
         val mockResponse = Response.success(mockResult)
 //        val mockResponse1 = Response.success(MovieDao(1,1,1, mutableListOf()))
         val mockObservable = Observable.just(mockResponse)
-        whenever(spyMovieRepository.observableMovie(anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(mockAPIs.getMovie(anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("popularity.desc")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
@@ -65,7 +61,7 @@ class MainViewModelTest {
     fun requestMovieError() {
         val throwable = Throwable("error")
         val mockObservable = Observable.error<Response<MovieDao>>(throwable)
-        whenever(spyMovieRepository.observableMovie(anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(mockAPIs.getMovie(anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("sort_by")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
@@ -80,7 +76,7 @@ class MainViewModelTest {
         assertEquals(mockResult.result.size, 0)
         val mockResponse = Response.success(mockResult)
         val mockObservable = Observable.just(mockResponse)
-        whenever(spyMovieRepository.observableMovie(anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(mockAPIs.getMovie(anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("sort_by")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
@@ -94,7 +90,7 @@ class MainViewModelTest {
         val mockResult = jsonUtil.getJsonToMock("movie_invalid_api.json", MovieDao::class.java)
         val mockResponse = Response.success(mockResult)
         val mockObservable = Observable.just(mockResponse)
-        whenever(spyMovieRepository.observableMovie(anyString(), anyInt())).thenReturn(mockObservable)
+        whenever(mockAPIs.getMovie(anyString(), anyInt())).thenReturn(mockObservable)
         mainViewModel.getListMovie("sort_by")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
