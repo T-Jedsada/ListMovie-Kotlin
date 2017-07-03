@@ -25,7 +25,7 @@ class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCall
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        setupInstance()
+        setupInstance()
         setupView()
         mainViewModel.getListMovie(SORT_BY)
                 .observe(this, Observer {
