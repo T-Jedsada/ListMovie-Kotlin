@@ -27,6 +27,9 @@ class MainActivity : LifecycleAppCompatActivity(), MovieAdapter.MovieAdapterCall
         setContentView(R.layout.activity_main)
         setupInstance()
         setupView()
+
+
+
         mainViewModel.getListMovie(SORT_BY)
                 .observe(this, Observer {
                     when (it) {
