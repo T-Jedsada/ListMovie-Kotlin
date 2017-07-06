@@ -17,7 +17,6 @@ fun main(args: Array<String>) {
     println(firstName.trim { it == 's' })
 
 
-    //Defining functions
     fun sum(a: Int, b: Int): Int {
         return a + b
     }
@@ -36,17 +35,22 @@ fun main(args: Array<String>) {
 
     val maxOf3 = maxOf(4, 6)
 
+    //safe null exception
+    fun funReturnStringNull(): String? = null
 
-    //loop for
+    fun funNullAble(input: Any?): Any? = input
+
+    //Expect funReturnStringNull must have value
+    println(funReturnStringNull()!!)
+
+
     for (i in 1..10) {
         println("index : $i")
     }
 
     val items = listOf("apple", "banana", "kiwi")
 
-    for (item in items) {
-        println(item)
-    }
+    for (item in items) println(item)
 
     for ((index, value) in items.withIndex()) {
         println("item at $index is $value")
@@ -56,8 +60,6 @@ fun main(args: Array<String>) {
 
     items.forEachIndexed { index, value -> println("item at $index is $value") }
 
-
-    //loop while
     var index = 9
     while (index >= 0) {
         println(index)
