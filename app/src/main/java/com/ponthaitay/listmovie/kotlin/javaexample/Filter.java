@@ -7,7 +7,6 @@ import java.util.List;
 public class Filter {
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-
     public static void main(String[] args) {
         List<Integer> list = Arrays.asList(1, 0, 9, 0, 5);
         List<Integer> positiveNumbers = new ArrayList<>();

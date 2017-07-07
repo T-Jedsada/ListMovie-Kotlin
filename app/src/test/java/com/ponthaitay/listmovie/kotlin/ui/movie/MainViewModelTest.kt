@@ -1,7 +1,6 @@
 package com.ponthaitay.listmovie.kotlin.ui.movie
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.ponthaitay.listmovie.kotlin.JsonMockUtility
@@ -45,7 +44,7 @@ class MainViewModelTest {
 //        val mockResponse1 = Response.success(MovieDao(1,1,1, mutableListOf()))
         val mockObservable = Observable.just(mockResponse)
         whenever(mockAPIs.getMovie(anyString(), anyInt())).thenReturn(mockObservable)
-        mainViewModel.getListMovie(eq())
+        mainViewModel.getListMovie("")
         val testObserver = mockObservable.test()
         testObserver.awaitTerminalEvent()
         testObserver.assertNoErrors()

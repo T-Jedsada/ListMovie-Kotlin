@@ -13,8 +13,14 @@ public class SimpleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple);
         tvText = (TextView) findViewById(R.id.tv_text);
-        tvText.setText("20Scoops CNX");
+        title("20Scoops CNX", tvText);
+    }
+
+    private void title(String title, TextView textView) {
+        textView.setText(title);
     }
 }
+
+
 
 

@@ -10,5 +10,3 @@ public class SingletonExample {
         return instance;
     }
 }
-
-
